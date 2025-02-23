@@ -1,3 +1,4 @@
+import { PortalHost } from '@rn-primitives/portal';
 import { Slot } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-reanimated';
@@ -14,6 +15,7 @@ export default function RootLayout() {
   return (
     <RootProvider>
       <Slot />
+      <PortalHost />
     </RootProvider>
   );
 }

@@ -30,6 +30,11 @@ const pages: Page[] = [
     title: 'Account',
     href: '/settings/account' as const,
   },
+  {
+    name: 'team',
+    title: 'Team',
+    href: '/settings/team' as const,
+  },
 ];
 
 export function SettingsPagesList() {
