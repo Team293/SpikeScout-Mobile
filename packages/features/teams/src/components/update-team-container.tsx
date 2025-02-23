@@ -8,51 +8,29 @@ import {
   CardTitle,
 } from '@kit/ui';
 
-import { UpdateEmailForm } from './update-email-form';
-import { UpdatePasswordForm } from './update-password-form';
+import { SwitchTeamForm } from './switch-team-form';
 
-export function UpdateAccountContainer() {
+export function UpdateTeamContainer() {
   return (
     <View className={'flex-col justify-center gap-4'}>
-      <UpdateEmailFormContainer />
-      <UpdatePasswordFormContainer />
+      <SwitchTeamContainer />
     </View>
   );
 }
 
-function UpdateEmailFormContainer() {
+function SwitchTeamContainer() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Update your email</CardTitle>
+        <CardTitle>Switch your team</CardTitle>
 
         <CardDescription>
-          Update your email. After updating your email, please verify it by
-          clicking the link in the email we sent you.
+          Switch your currently selected team. This will sign you out.
         </CardDescription>
       </CardHeader>
 
       <CardContent>
-        <UpdateEmailForm />
-      </CardContent>
-    </Card>
-  );
-}
-
-function UpdatePasswordFormContainer() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Update your password</CardTitle>
-
-        <CardDescription>
-          Update your password. After updating your password, please verify it
-          by clicking the link in the email we sent you.
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent>
-        <UpdatePasswordForm />
+        <SwitchTeamForm />
       </CardContent>
     </Card>
   );

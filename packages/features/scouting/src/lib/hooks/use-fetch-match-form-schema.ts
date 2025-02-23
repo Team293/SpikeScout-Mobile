@@ -10,12 +10,9 @@ export function useFetchMatchFormSchema() {
     const { data, error } = await supabase
       .from('scouting_schemas')
       .select('*')
-      .eq('id', 0)
       .eq('scouting_type', 'match')
       .eq('current', true)
       .limit(1);
-
-    console.log(data, error);
 
     if (error) {
       throw error;

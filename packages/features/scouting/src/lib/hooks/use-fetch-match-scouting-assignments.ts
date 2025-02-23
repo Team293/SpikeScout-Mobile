@@ -1,25 +1,17 @@
+import { useQuery } from '@tanstack/react-query';
 import { z } from 'zod';
 
 import { useSupabase } from '@kit/supabase';
 
-const assignments = [
-  {
-    userId: '1',
-    userName: 'Alice Johnson',
-    matchNumber: 1,
-    teamPosition: 1,
-    teamNumber: 293,
-    hasScouted: false,
-  },
-];
+import { useFetchAllMatchData } from './use-fetch-all-match-data';
 
 export const MatchScoutingAssignmentsSchema = z.array(
   z.object({
     userId: z.string(),
     userName: z.string(),
+    teamNumber: z.number(),
     matchNumber: z.number(),
     teamPosition: z.number(),
-    teamNumber: z.number(),
   }),
 );
 
@@ -29,7 +21,21 @@ export function useFetchMatchScoutingAssignments(
 ) {
   const supabase = useSupabase();
   const queryKey = ['match', 'assignments', userId];
-  const fetchResponse = useFetchResponse();
+  const { data: matchData } = useFetchAllMatchData(teamId);
+
+  const hasScouted = () => {
+    return (matchNumber: number, teamNumber: number) => {
+      if (!teamId || !matchData) return false;
+
+      const hasScoutedMatch = matchData.find(
+        (match) =>
+          match.match_number === matchNumber &&
+          match.team_number === teamNumber,
+      );
+
+      return !!hasScoutedMatch;
+    };
+  };
 
   const queryFn = async () => {
     if (!userId || !teamId) {
@@ -46,22 +52,25 @@ export function useFetchMatchScoutingAssignments(
       throw error;
     }
 
-    const parsedAssignments = MatchScoutingAssignmentsSchema.parse(data);
+    const allAssignments = data.flatMap(
+      (row) => row.schedule_json?.assignments ?? [],
+    );
+
+    const parsedAssignments =
+      MatchScoutingAssignmentsSchema.parse(allAssignments);
+
     return parsedAssignments.filter(
-      (assignment) => assignment.userId === userId,
+      (assignment) =>
+        assignment.userId === userId &&
+        !hasScouted()(assignment.matchNumber, assignment.teamNumber),
     );
   };
 
-  // return useQuery({
-  //   queryKey,
-  //   queryFn,
-  //   enabled: !!userId && !!teamId,
-  // });
-
-  return {
-    data: assignments,
-    isLoading: false,
-    isError: false,
-    error: null,
-  };
+  return useQuery({
+    queryKey,
+    queryFn,
+    enabled: !!userId && !!teamId,
+    refetchInterval: 5000,
+    refetchIntervalInBackground: true,
+  });
 }

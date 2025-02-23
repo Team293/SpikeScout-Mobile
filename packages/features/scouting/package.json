@@ -1,5 +1,5 @@
 {
-  "name": "@kit/forms",
+  "name": "@kit/scouting",
   "version": "0.0.0",
   "private": true,
   "main": "./src/index.ts",
@@ -15,6 +15,7 @@
     "@kit/prettier-config": "workspace:*",
     "@kit/supabase": "workspace:*",
     "@kit/tailwind-config": "workspace:*",
+    "@kit/teams": "workspace:*",
     "@kit/typescript-config": "workspace:*",
     "@kit/ui": "workspace:*",
     "@supabase/supabase-js": "catalog:",

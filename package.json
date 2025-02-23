@@ -21,8 +21,7 @@
     "supabase:web:start": "pnpm --filter app supabase:start",
     "supabase:web:stop": "pnpm --filter app supabase:stop",
     "supabase:web:typegen": "pnpm --filter app supabase:typegen",
-    "supabase:web:reset": "pnpm --filter app supabase:reset",
-    "stripe:listen": "pnpm --filter '@kit/stripe' start"
+    "supabase:web:reset": "pnpm --filter app supabase:reset"
   },
   "devDependencies": {
     "@manypkg/cli": "catalog:",

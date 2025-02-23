@@ -1,3 +1,6 @@
+import { Stack } from 'expo-router';
+import { View } from 'react-native';
+
 import {
   Button,
   Card,
@@ -17,11 +20,20 @@ import {
 export function LocalMatchDataCard() {
   const localMatchData = useLocalMatchData();
 
-  if (!localMatchData || localMatchData.length === 0) {
-    return <NoMatches />;
-  }
-
-  return <StoredMatches localMatches={localMatchData} />;
+  return (
+    <View>
+      <Stack.Screen
+        options={{
+          title: 'Local Match Data',
+        }}
+      />
+      {!localMatchData || localMatchData.length > 0 ? (
+        <NoMatches />
+      ) : (
+        <StoredMatches localMatches={localMatchData} />
+      )}
+    </View>
+  );
 }
 
 function NoMatches() {

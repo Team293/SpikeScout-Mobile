@@ -2,19 +2,20 @@ import { useQuery } from '@tanstack/react-query';
 
 import { useSupabase } from '@kit/supabase';
 
-export function useFetchAccount(userId: string | null | undefined) {
+export function useFetchTeam(teamId: string | null | undefined) {
   const supabase = useSupabase();
-  const queryKey = ['user', 'account'];
+  const queryKey = ['team', teamId];
 
   const queryFn = async () => {
-    if (!userId) {
+    if (!teamId) {
       return null;
     }
 
     const { data, error } = await supabase
       .from('accounts')
       .select('*')
-      .eq('id', userId)
+      .eq('id', teamId)
+      .eq('is_personal_account', false)
       .limit(1)
       .single();
 
@@ -28,6 +29,6 @@ export function useFetchAccount(userId: string | null | undefined) {
   return useQuery({
     queryKey,
     queryFn,
-    enabled: !!userId,
+    enabled: !!teamId,
   });
 }

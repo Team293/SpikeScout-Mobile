@@ -1,56 +1,67 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
+import React from 'react';
+
 import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useUpdateUser } from '@kit/supabase';
-import { Button, Input, Text, toast } from '@kit/ui';
+import { useSignOut, useUser } from '@kit/supabase';
+import {
+  Option,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@kit/ui';
 
-import { UpdateUserSchema } from '../lib/hooks/use-update-user';
+import { useFetchTeams } from '../lib/hooks/use-fetch-teams';
+import { useCurrentTeamId, useUpdateTeam } from '../lib/hooks/use-team-store';
 
-export function UpdateEmailForm() {
-  const updateEmailMutation = useUpdateUser();
+export function SwitchTeamForm() {
+  const { data: user } = useUser();
+  const updateTeam = useUpdateTeam();
+  const currentTeamId = useCurrentTeamId();
+  const { data: userTeams } = useFetchTeams(user?.id);
+  const signOutMutation = useSignOut();
 
-  const form = useForm({
-    resolver: zodResolver(UpdateUserSchema),
-    defaultValues: {
-      email: '',
-    },
-  });
+  const insets = useSafeAreaInsets();
+  const contentInsets = {
+    top: insets.top,
+    bottom: insets.bottom,
+    left: 12,
+    right: 12,
+  };
+
+  const selectedTeam: Option | undefined = userTeams?.find(
+    (team) => team.id === currentTeamId,
+  )
+    ? {
+        value: currentTeamId,
+        label: userTeams.find((team) => team.id === currentTeamId)!.name,
+      }
+    : undefined;
 
   return (
     <View className="flex flex-col gap-4">
-      <Controller
-        control={form.control}
-        name="email"
-        render={({ field }) => (
-          <Input inputMode={'email'} placeholder="Email" {...field} />
-        )}
-      />
-
-      <Button
-        disabled={updateEmailMutation.isPending}
-        onPress={form.handleSubmit((data) => {
-          updateEmailMutation.mutate(
-            {
-              ...data,
-              redirectTo: `${window.location.origin}`,
-            },
-            {
-              onSuccess: () => {
-                toast.success('Email updated successfully');
-                form.reset();
-              },
-              onError: () => {
-                toast.error('Something went wrong');
-              },
-            },
-          );
-        })}
+      <Select
+        value={selectedTeam}
+        onValueChange={(option?: Option) => {
+          if (option?.value) {
+            if (!(option.value === currentTeamId)) {
+              updateTeam(option.value);
+              signOutMutation.mutate();
+            }
+          }
+        }}
       >
-        <Text>
-          {updateEmailMutation.isPending ? 'Updating...' : 'Update Email'}
-        </Text>
-      </Button>
+        <SelectTrigger>
+          <SelectValue placeholder="Select a team" />
+        </SelectTrigger>
+        <SelectContent insets={contentInsets}>
+          {userTeams?.map((team) => (
+            <SelectItem key={team.id} label={team.name} value={team.id} />
+          ))}
+        </SelectContent>
+      </Select>
     </View>
   );
 }

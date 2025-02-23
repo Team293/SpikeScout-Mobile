@@ -61,22 +61,37 @@ export function RenderForm({
         });
 
         isValid = false;
-      } else if (
-        field.type === 'number' &&
-        (data[fieldName]! instanceof Number ||
-          isNaN(data[fieldName]) ||
-          (field.required &&
-            ((field.min !== undefined && data[fieldName] < field.min) ||
-              (field.max !== undefined && data[fieldName] > field.max))))
-      ) {
-        setError(fieldName, {
-          type: 'range',
-          message: `${field.label} must be between ${field.min} and ${field.max}`,
-        });
-
-        isValid = false;
-      } else {
-        clearErrors(fieldName);
+      } else if (field.type === 'number') {
+        const value = data[fieldName];
+        if (value !== undefined && value !== '' && value !== null) {
+          const num = Number(value);
+          if (isNaN(num)) {
+            setError(fieldName, {
+              type: 'type',
+              message: `${field.label} must be a valid number`,
+            });
+            isValid = false;
+          } else if (
+            (field.min !== undefined && num < field.min) ||
+            (field.max !== undefined && num > field.max)
+          ) {
+            setError(fieldName, {
+              type: 'range',
+              message: `${field.label} must be between ${field.min} and ${field.max}`,
+            });
+            isValid = false;
+          } else {
+            clearErrors(fieldName);
+          }
+        } else if (field.required) {
+          setError(fieldName, {
+            type: 'required',
+            message: `${field.label} is required`,
+          });
+          isValid = false;
+        } else {
+          clearErrors(fieldName);
+        }
       }
     });
 

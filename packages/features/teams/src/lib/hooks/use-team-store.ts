@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 interface TeamState {
   teamId: string | null;
-  setTeamId: (id: string | null) => void;
+  setTeamId: (id: string | null | undefined) => void;
 }
 
 const useTeamStore = create<TeamState>((set) => ({
@@ -12,7 +12,7 @@ const useTeamStore = create<TeamState>((set) => ({
 
 export function useUpdateTeam() {
   const setTeamId = useTeamStore((state) => state.setTeamId);
-  return (newId: string | null) => {
+  return (newId: string | null | undefined) => {
     setTeamId(newId);
   };
 }

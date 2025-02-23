@@ -341,15 +341,24 @@ importers:
       '@kit/auth':
         specifier: workspace:*
         version: link:../../packages/features/auth
+      '@kit/scouting':
+        specifier: workspace:*
+        version: link:../../packages/features/scouting
       '@kit/supabase':
         specifier: workspace:^
         version: link:../../packages/supabase
+      '@kit/teams':
+        specifier: workspace:*
+        version: link:../../packages/features/teams
       '@kit/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@react-native-async-storage/async-storage':
         specifier: 'catalog:'
         version: 2.1.0(react-native@0.76.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.18)(react@18.3.1))
+      '@react-native-community/netinfo':
+        specifier: 11.4.1
+        version: 11.4.1(react-native@0.76.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.18)(react@18.3.1))
       '@react-navigation/native':
         specifier: 'catalog:'
         version: 7.0.14(react-native@0.76.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
@@ -544,6 +553,107 @@ importers:
       '@kit/ui':
         specifier: workspace:*
         version: link:../../ui
+      '@types/react':
+        specifier: 'catalog:'
+        version: 18.3.18
+      expo-auth-session:
+        specifier: 'catalog:'
+        version: 5.5.2(expo@52.0.25(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@expo/metro-runtime@4.0.0(react-native@0.76.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.18)(react@18.3.1)))(react-native@0.76.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))
+      react:
+        specifier: 'catalog:'
+        version: 18.3.1
+      react-hook-form:
+        specifier: 'catalog:'
+        version: 7.54.2(react@18.3.1)
+      zod:
+        specifier: 'catalog:'
+        version: 3.24.1
+
+  packages/features/scouting:
+    dependencies:
+      expo-document-picker:
+        specifier: 'catalog:'
+        version: 13.0.2(expo@52.0.25(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@expo/metro-runtime@4.0.0(react-native@0.76.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.18)(react@18.3.1)))(react-native@0.76.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))
+    devDependencies:
+      '@hookform/resolvers':
+        specifier: 'catalog:'
+        version: 3.10.0(react-hook-form@7.54.2(react@18.3.1))
+      '@kit/eslint-config':
+        specifier: workspace:*
+        version: link:../../../tooling/eslint-config
+      '@kit/prettier-config':
+        specifier: workspace:*
+        version: link:../../../tooling/prettier-config
+      '@kit/supabase':
+        specifier: workspace:*
+        version: link:../../supabase
+      '@kit/tailwind-config':
+        specifier: workspace:*
+        version: link:../../../tooling/tailwind-config
+      '@kit/teams':
+        specifier: workspace:*
+        version: link:../teams
+      '@kit/typescript-config':
+        specifier: workspace:*
+        version: link:../../../tooling/typescript-config
+      '@kit/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@supabase/supabase-js':
+        specifier: 'catalog:'
+        version: 2.47.12
+      '@tanstack/react-query':
+        specifier: 'catalog:'
+        version: 5.64.0(react@18.3.1)
+      '@types/react':
+        specifier: 'catalog:'
+        version: 18.3.18
+      expo-auth-session:
+        specifier: 'catalog:'
+        version: 5.5.2(expo@52.0.25(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@expo/metro-runtime@4.0.0(react-native@0.76.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.18)(react@18.3.1)))(react-native@0.76.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))
+      react:
+        specifier: 'catalog:'
+        version: 18.3.1
+      react-hook-form:
+        specifier: 'catalog:'
+        version: 7.54.2(react@18.3.1)
+      zod:
+        specifier: 'catalog:'
+        version: 3.24.1
+
+  packages/features/teams:
+    dependencies:
+      expo-document-picker:
+        specifier: 'catalog:'
+        version: 13.0.2(expo@52.0.25(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@expo/metro-runtime@4.0.0(react-native@0.76.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.18)(react@18.3.1)))(react-native@0.76.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))
+    devDependencies:
+      '@hookform/resolvers':
+        specifier: 'catalog:'
+        version: 3.10.0(react-hook-form@7.54.2(react@18.3.1))
+      '@kit/eslint-config':
+        specifier: workspace:*
+        version: link:../../../tooling/eslint-config
+      '@kit/prettier-config':
+        specifier: workspace:*
+        version: link:../../../tooling/prettier-config
+      '@kit/supabase':
+        specifier: workspace:*
+        version: link:../../supabase
+      '@kit/tailwind-config':
+        specifier: workspace:*
+        version: link:../../../tooling/tailwind-config
+      '@kit/typescript-config':
+        specifier: workspace:*
+        version: link:../../../tooling/typescript-config
+      '@kit/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@supabase/supabase-js':
+        specifier: 'catalog:'
+        version: 2.47.12
+      '@tanstack/react-query':
+        specifier: 'catalog:'
+        version: 5.64.0(react@18.3.1)
       '@types/react':
         specifier: 'catalog:'
         version: 18.3.18
@@ -2444,6 +2554,11 @@ packages:
     resolution: {integrity: sha512-eAGQGPTAuFNEoIQSB5j2Jh1zm5NPyBRTfjRMfCN0W1OakC5WIB5vsDyIQhUweKN9XOE2/V07lqTMGsL0dGXNkA==}
     peerDependencies:
       react-native: ^0.0.0-0 || >=0.65 <1.0
+
+  '@react-native-community/netinfo@11.4.1':
+    resolution: {integrity: sha512-B0BYAkghz3Q2V09BF88RA601XursIEA111tnc2JOaN7axJWmNefmfjZqw/KdSxKZp7CZUuPpjBmz/WCR9uaHYg==}
+    peerDependencies:
+      react-native: '>=0.59'
 
   '@react-native/assets-registry@0.76.6':
     resolution: {integrity: sha512-YI8HoReYiIwdFQs+k9Q9qpFTnsyYikZxgs/UVtVbhKixXDQF6F9LLvj2naOx4cfV+RGybNKxwmDl1vUok/dRFQ==}
@@ -5997,6 +6112,7 @@ packages:
 
   lodash.get@4.4.2:
     resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
+    deprecated: This package is deprecated. Use the optional chaining (?.) operator instead.
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
@@ -10634,6 +10750,10 @@ snapshots:
     dependencies:
       merge-options: 3.0.4
       react-native: 0.76.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.18)(react@19.0.0)
+
+  '@react-native-community/netinfo@11.4.1(react-native@0.76.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.18)(react@18.3.1))':
+    dependencies:
+      react-native: 0.76.6(@babel/core@7.26.0)(@babel/preset-env@7.26.0(@babel/core@7.26.0))(@types/react@18.3.18)(react@18.3.1)
 
   '@react-native/assets-registry@0.76.6': {}
 

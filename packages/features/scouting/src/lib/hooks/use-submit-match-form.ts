@@ -9,6 +9,7 @@ export type MatchData = {
   eventCode: string | null | undefined;
   teamId: string | null | undefined;
   matchNumber: number;
+  teamNumber: number;
 };
 
 interface LocalMatchDataStore {
@@ -35,6 +36,7 @@ export function useSubmitMatchForm() {
     eventCode: string,
     teamId: string,
     matchNumber: number,
+    teamNumber: number,
   ) => {
     const fusedData = fuseData(schema, data);
 
@@ -45,6 +47,7 @@ export function useSubmitMatchForm() {
       event_code: eventCode,
       team: teamId,
       match_number: matchNumber,
+      team_number: teamNumber,
     });
   };
 
@@ -54,15 +57,30 @@ export function useSubmitMatchForm() {
     eventCode: string | null | undefined,
     teamId: string | null | undefined,
     matchNumber: number,
+    teamNumber: number,
   ) => {
     if (!eventCode || !teamId) {
       throw new Error('Event code and team ID are required');
     }
 
     if (netInfo.isConnected) {
-      await uploadToCloud(data, schema, eventCode, teamId, matchNumber);
+      await uploadToCloud(
+        data,
+        schema,
+        eventCode,
+        teamId,
+        matchNumber,
+        teamNumber,
+      );
     } else {
-      setMatchData({ data, schema, eventCode, teamId, matchNumber });
+      setMatchData({
+        data,
+        schema,
+        eventCode,
+        teamId,
+        matchNumber,
+        teamNumber,
+      });
     }
   };
 }
