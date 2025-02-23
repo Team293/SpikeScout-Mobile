@@ -15,8 +15,9 @@ const { supabaseUrl, supabaseAnonKey } = z
     supabaseAnonKey: z.string(),
   })
   .parse({
-    supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_API_URL,
-    supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+    supabaseUrl: 'https://oibjwelnhwnuktptqldj.supabase.co/',
+    supabaseAnonKey:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pYmp3ZWxuaHdudWt0cHRxbGRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAzMzgwMjQsImV4cCI6MjA1NTkxNDAyNH0.4vE9-yPsK37auaIth8EFkLQlX4B7iMQ8OelJmA-72qo',
   });
 
 export const getSupabaseBrowserClient = <GenericSchema = Database>() =>
