@@ -22,7 +22,7 @@ import {
 export default function FormPage() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
-  const { data: fields, isLoading } = useFetchMatchFormSchema();
+  const { data: schema, isLoading } = useFetchMatchFormSchema();
   const currentTeamId = useCurrentTeamId();
   const { data: team } = useFetchTeam(currentTeamId);
   const submitMatchForm = useSubmitMatchForm();
@@ -51,6 +51,23 @@ export default function FormPage() {
     );
   }
 
+  if (!schema) {
+    return (
+      <Card className={'m-5'}>
+        <CardHeader>
+          <CardTitle>Form Not Found</CardTitle>
+          <CardDescription>
+            The form you are looking for does not exist. Please contact your
+            team's scouting lead for more information.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  const formFields =
+    schema && 'schema' in schema ? JSON.parse(schema.schema).fields : [];
+
   return (
     <View>
       <Stack.Screen
@@ -66,7 +83,7 @@ export default function FormPage() {
               <Badge
                 className={'mr-2'}
                 style={{
-                  backgroundColor: getAllianceColor(teamPosition),
+                  backgroundColor: getAllianceColor(Number(teamPosition || 0)),
                 }}
               >
                 <Text>
@@ -84,17 +101,18 @@ export default function FormPage() {
           </CardHeader>
           <CardContent>
             <RenderForm
-              fields={JSON.parse(fields).fields}
+              fields={formFields}
               form={form}
               handleCustomSubmit={(data: any) => {
                 submitMatchForm(
                   data,
-                  fields,
+                  formFields,
+                  schema.name,
                   team?.current_event,
                   currentTeamId,
                   Number(matchNumber),
-                  Number(teamNumber),
-                  Number(teamPosition),
+                  Number(teamNumber) || 0,
+                  Number(teamPosition || 0),
                 );
                 router.push('/');
               }}

@@ -27,7 +27,7 @@ export function LocalMatchDataCard() {
           title: 'Local Match Data',
         }}
       />
-      {!localMatchData || localMatchData.length > 0 ? (
+      {!localMatchData || localMatchData.length === 0 ? (
         <NoMatches />
       ) : (
         <StoredMatches localMatches={localMatchData} />
@@ -74,6 +74,9 @@ function StoredMatches({ localMatches }: { localMatches: MatchData[] }) {
                   match.schema,
                   match.eventCode,
                   match.teamId,
+                  match.matchNumber,
+                  match.teamNumber,
+                  match.teamLocation,
                 ),
               ),
             );

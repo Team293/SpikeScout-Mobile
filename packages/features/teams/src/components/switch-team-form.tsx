@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -63,7 +62,10 @@ export function SwitchTeamForm() {
         }}
       >
         <SelectTrigger>
-          <SelectValue placeholder="Select a team" />
+          <SelectValue
+            placeholder="Select a team"
+            className={'text-foreground'}
+          />
         </SelectTrigger>
         <SelectContent insets={contentInsets}>
           {userTeams?.map((team) => (

@@ -1,11 +1,12 @@
 import { useNetInfo } from '@react-native-community/netinfo';
 import { create } from 'zustand';
 
-import { useSupabase } from '@kit/supabase';
+import { useSupabase, useUser } from '@kit/supabase';
 
 export type MatchData = {
   data: any;
   schema: any;
+  formName: string;
   eventCode: string | null | undefined;
   teamId: string | null | undefined;
   matchNumber: number;
@@ -30,33 +31,52 @@ export function useSubmitMatchForm() {
   const netInfo = useNetInfo();
   const supabase = useSupabase();
   const setMatchData = matchDataStore((state) => state.setMatchData);
+  const { data: user } = useUser();
 
   const uploadToCloud = async (
     data: any,
     schema: any,
+    formName: string,
     eventCode: string,
     teamId: string,
     matchNumber: number,
     teamNumber: number,
     teamLocation: number,
   ) => {
-    const fusedData = fuseData(schema, data);
+    try {
+      const parsedSchema =
+        typeof schema === 'string' ? JSON.parse(schema) : schema;
 
-    await supabase.from('scouting_responses').insert({
-      type: 'match',
-      form_schema: schema,
-      scouting_json: fusedData,
-      event_code: eventCode,
-      team: teamId,
-      match_number: matchNumber,
-      team_number: teamNumber,
-      team_location: teamLocation,
-    });
+      const fusedData = fuseData(parsedSchema, data);
+
+      const formSchema = {
+        name: formName,
+        schema: {
+          fields: parsedSchema,
+        },
+      };
+
+      await supabase.from('scouting_responses').insert({
+        type: 'match',
+        form_schema: formSchema,
+        scouting_json: fusedData,
+        event_code: eventCode,
+        team: teamId,
+        match_number: matchNumber,
+        team_number: teamNumber,
+        team_location: teamLocation,
+        scouter: user?.id,
+      });
+    } catch (error) {
+      console.error('Error uploading match data:', error);
+      throw error;
+    }
   };
 
   return async (
     data: any,
     schema: any,
+    formName: string,
     eventCode: string | null | undefined,
     teamId: string | null | undefined,
     matchNumber: number,
@@ -71,6 +91,7 @@ export function useSubmitMatchForm() {
       await uploadToCloud(
         data,
         schema,
+        formName,
         eventCode,
         teamId,
         matchNumber,
@@ -81,6 +102,7 @@ export function useSubmitMatchForm() {
       setMatchData({
         data,
         schema,
+        formName,
         eventCode,
         teamId,
         matchNumber,
@@ -99,7 +121,7 @@ function fuseData(
 
   Object.keys(submitted).forEach((key) => {
     const match = key.match(/field_(\d+)/);
-    if (match) {
+    if (match && match[1]) {
       const index = parseInt(match[1], 10);
       if (fields[index] && fields[index].label) {
         result[fields[index].label] = submitted[key]!;

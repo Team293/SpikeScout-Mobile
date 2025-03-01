@@ -158,7 +158,10 @@ export function RenderForm({
                       value={{ value: formField.value, label: formField.value }}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select an option" />
+                        <SelectValue
+                          placeholder="Select an option"
+                          className={'text-foreground'}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {field.options?.map((option, optionIndex) => (

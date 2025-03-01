@@ -20,13 +20,14 @@ export function useFetchMatchScoutingAssignments(
 ) {
   const supabase = useSupabase();
   const queryKey = ['match', 'assignments', userId];
-  const { data: matchData } = useFetchAllMatchData(teamId);
+  const { data: matchData, isSuccess: isMatchDataLoaded } =
+    useFetchAllMatchData(teamId);
 
   const hasScouted = () => {
     return (
       matchNumber: number,
       teamNumber: number | null | undefined,
-      teamLocation: number,
+      teamPosition: number,
     ) => {
       if (!teamId || !matchData) return false;
 
@@ -34,7 +35,7 @@ export function useFetchMatchScoutingAssignments(
         (match) =>
           match.match_number === matchNumber &&
           (teamNumber != null ? match.team_number === teamNumber : true) &&
-          match.team_location === teamLocation,
+          (match as any).team_location === teamPosition,
       );
 
       return !!hasScoutedMatch;
@@ -56,9 +57,12 @@ export function useFetchMatchScoutingAssignments(
       throw error;
     }
 
-    const allAssignments = data.flatMap(
-      (row) => row.schedule_json?.assignments ?? [],
-    );
+    const allAssignments = data.flatMap((row) => {
+      if (row.schedule_json && typeof row.schedule_json === 'object') {
+        return (row.schedule_json as any).assignments || [];
+      }
+      return [];
+    });
 
     const parsedAssignments =
       MatchScoutingAssignmentsSchema.parse(allAssignments);
@@ -77,8 +81,9 @@ export function useFetchMatchScoutingAssignments(
   return useQuery({
     queryKey,
     queryFn,
-    enabled: !!userId && !!teamId,
+    enabled: !!userId && !!teamId && isMatchDataLoaded,
     refetchInterval: 5000,
     refetchIntervalInBackground: true,
+    refetchOnMount: 'always',
   });
 }
