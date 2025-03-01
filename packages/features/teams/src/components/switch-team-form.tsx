@@ -1,9 +1,10 @@
 import React from 'react';
 
+import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useSignOut, useUser } from '@kit/supabase';
+import { useUser } from '@kit/supabase';
 import {
   Option,
   Select,
@@ -13,15 +14,26 @@ import {
   SelectValue,
 } from '@kit/ui';
 
+import { useFetchTeam } from '../lib/hooks/use-fetch-team';
 import { useFetchTeams } from '../lib/hooks/use-fetch-teams';
 import { useCurrentTeamId, useUpdateTeam } from '../lib/hooks/use-team-store';
+
+function TeamSelectItem({ team }: { team: { account_id: string } }) {
+  const { data: teamData } = useFetchTeam(team.account_id);
+  return (
+    <SelectItem
+      key={team.account_id}
+      label={teamData?.name ?? 'Loading...'}
+      value={team.account_id}
+    />
+  );
+}
 
 export function SwitchTeamForm() {
   const { data: user } = useUser();
   const updateTeam = useUpdateTeam();
   const currentTeamId = useCurrentTeamId();
   const { data: userTeams } = useFetchTeams(user?.id);
-  const signOutMutation = useSignOut();
 
   const insets = useSafeAreaInsets();
   const contentInsets = {
@@ -31,12 +43,12 @@ export function SwitchTeamForm() {
     right: 12,
   };
 
-  const selectedTeam: Option | undefined = userTeams?.find(
-    (team) => team.id === currentTeamId,
-  )
+  const selectedTeamData = useFetchTeam(currentTeamId);
+
+  const selectedTeam: Option | undefined = currentTeamId
     ? {
         value: currentTeamId,
-        label: userTeams.find((team) => team.id === currentTeamId)!.name,
+        label: selectedTeamData.data?.name ?? 'Loading...',
       }
     : undefined;
 
@@ -45,11 +57,8 @@ export function SwitchTeamForm() {
       <Select
         value={selectedTeam}
         onValueChange={(option?: Option) => {
-          if (option?.value) {
-            if (!(option.value === currentTeamId)) {
-              updateTeam(option.value);
-              signOutMutation.mutate();
-            }
+          if (option?.value && option.value !== currentTeamId) {
+            updateTeam(option.value);
           }
         }}
       >
@@ -58,7 +67,7 @@ export function SwitchTeamForm() {
         </SelectTrigger>
         <SelectContent insets={contentInsets}>
           {userTeams?.map((team) => (
-            <SelectItem key={team.id} label={team.name} value={team.id} />
+            <TeamSelectItem key={team.account_id} team={team} />
           ))}
         </SelectContent>
       </Select>

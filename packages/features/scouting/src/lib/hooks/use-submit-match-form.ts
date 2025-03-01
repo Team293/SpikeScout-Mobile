@@ -10,6 +10,7 @@ export type MatchData = {
   teamId: string | null | undefined;
   matchNumber: number;
   teamNumber: number;
+  teamLocation: number;
 };
 
 interface LocalMatchDataStore {
@@ -37,6 +38,7 @@ export function useSubmitMatchForm() {
     teamId: string,
     matchNumber: number,
     teamNumber: number,
+    teamLocation: number,
   ) => {
     const fusedData = fuseData(schema, data);
 
@@ -48,6 +50,7 @@ export function useSubmitMatchForm() {
       team: teamId,
       match_number: matchNumber,
       team_number: teamNumber,
+      team_location: teamLocation,
     });
   };
 
@@ -58,6 +61,7 @@ export function useSubmitMatchForm() {
     teamId: string | null | undefined,
     matchNumber: number,
     teamNumber: number,
+    teamLocation: number,
   ) => {
     if (!eventCode || !teamId) {
       throw new Error('Event code and team ID are required');
@@ -71,6 +75,7 @@ export function useSubmitMatchForm() {
         teamId,
         matchNumber,
         teamNumber,
+        teamLocation,
       );
     } else {
       setMatchData({
@@ -80,6 +85,7 @@ export function useSubmitMatchForm() {
         teamId,
         matchNumber,
         teamNumber,
+        teamLocation,
       });
     }
   };

@@ -8,8 +8,7 @@ import { useFetchAllMatchData } from './use-fetch-all-match-data';
 export const MatchScoutingAssignmentsSchema = z.array(
   z.object({
     userId: z.string(),
-    userName: z.string(),
-    teamNumber: z.number(),
+    teamNumber: z.number().optional(),
     matchNumber: z.number(),
     teamPosition: z.number(),
   }),
@@ -24,13 +23,18 @@ export function useFetchMatchScoutingAssignments(
   const { data: matchData } = useFetchAllMatchData(teamId);
 
   const hasScouted = () => {
-    return (matchNumber: number, teamNumber: number) => {
+    return (
+      matchNumber: number,
+      teamNumber: number | null | undefined,
+      teamLocation: number,
+    ) => {
       if (!teamId || !matchData) return false;
 
       const hasScoutedMatch = matchData.find(
         (match) =>
           match.match_number === matchNumber &&
-          match.team_number === teamNumber,
+          (teamNumber != null ? match.team_number === teamNumber : true) &&
+          match.team_location === teamLocation,
       );
 
       return !!hasScoutedMatch;
@@ -62,7 +66,11 @@ export function useFetchMatchScoutingAssignments(
     return parsedAssignments.filter(
       (assignment) =>
         assignment.userId === userId &&
-        !hasScouted()(assignment.matchNumber, assignment.teamNumber),
+        !hasScouted()(
+          assignment.matchNumber,
+          assignment.teamNumber,
+          assignment.teamPosition,
+        ),
     );
   };
 

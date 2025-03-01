@@ -41,5 +41,7 @@ export function useFetchAllMatchData(teamId: string | null | undefined) {
       return [...remoteData, ...localData];
     },
     enabled: !!teamId,
+    refetchIntervalInBackground: true,
+    refetchInterval: 500,
   });
 }

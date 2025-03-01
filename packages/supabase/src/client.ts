@@ -25,7 +25,7 @@ export const getSupabaseBrowserClient = <GenericSchema = Database>() =>
     auth: {
       storage,
       autoRefreshToken: true,
-      persistSession: typeof document !== 'undefined',
+      persistSession: true, // Always persist session regardless of platform
       detectSessionInUrl: false,
     },
   });

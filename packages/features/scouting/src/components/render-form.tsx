@@ -6,6 +6,7 @@ import { View } from 'react-native';
 import {
   Button,
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -20,18 +21,25 @@ import {
 } from '@kit/ui';
 
 interface FieldDefinition {
-  type: 'text' | 'number' | 'date' | 'select' | 'boolean';
+  type: 'text' | 'number' | 'date' | 'select' | 'boolean' | 'matrix';
   label: string;
   required?: boolean;
   placeholder?: string;
   options?: string[];
   min?: number;
   max?: number;
+  matrixRows?: MatrixRow[];
+}
+
+interface MatrixRow {
+  id: string;
+  label: string;
+  value: number;
 }
 
 interface DynamicFormRendererProps {
   fields: FieldDefinition[];
-  form: UseFormReturn<any, any, any>;
+  form: UseFormReturn<any>;
   handleCustomSubmit: (data: any) => void;
 }
 
@@ -42,7 +50,6 @@ export function RenderForm({
 }: DynamicFormRendererProps) {
   const {
     control,
-    handleSubmit,
     formState: { errors },
     setError,
     clearErrors,
@@ -54,43 +61,36 @@ export function RenderForm({
 
     fields.forEach((field, index) => {
       const fieldName = `field_${index}`;
-      if (field.required && !data[fieldName]) {
-        setError(fieldName, {
-          type: 'required',
-          message: `${field.label} is required`,
-        });
-
-        isValid = false;
-      } else if (field.type === 'number') {
-        const value = data[fieldName];
-        if (value !== undefined && value !== '' && value !== null) {
-          const num = Number(value);
-          if (isNaN(num)) {
-            setError(fieldName, {
-              type: 'type',
-              message: `${field.label} must be a valid number`,
-            });
-            isValid = false;
-          } else if (
-            (field.min !== undefined && num < field.min) ||
-            (field.max !== undefined && num > field.max)
-          ) {
-            setError(fieldName, {
-              type: 'range',
-              message: `${field.label} must be between ${field.min} and ${field.max}`,
-            });
-            isValid = false;
-          } else {
-            clearErrors(fieldName);
-          }
-        } else if (field.required) {
+      if (field.type !== 'boolean' && field.type !== 'matrix') {
+        if (field.required && !data[fieldName]) {
           setError(fieldName, {
             type: 'required',
             message: `${field.label} is required`,
           });
           isValid = false;
-        } else {
-          clearErrors(fieldName);
+        } else if (field.type === 'number') {
+          const value = data[fieldName];
+          if (value !== undefined && value !== '' && value !== null) {
+            const num = Number(value);
+            if (isNaN(num)) {
+              setError(fieldName, {
+                type: 'type',
+                message: `${field.label} must be a valid number`,
+              });
+              isValid = false;
+            } else if (
+              (field.min !== undefined && num < field.min) ||
+              (field.max !== undefined && num > field.max)
+            ) {
+              setError(fieldName, {
+                type: 'range',
+                message: `${field.label} must be between ${field.min} and ${field.max}`,
+              });
+              isValid = false;
+            } else {
+              clearErrors(fieldName);
+            }
+          }
         }
       }
     });
@@ -106,7 +106,7 @@ export function RenderForm({
   }
 
   return (
-    <View style={{ paddingHorizontal: 20 }}>
+    <View>
       {fields.map((field, index) => {
         const fieldName = `field_${index}`;
         const displayName = field.required ? (
@@ -127,7 +127,7 @@ export function RenderForm({
                 render={({ field: formField }) => (
                   <View
                     style={{
-                      marginTop: 20,
+                      marginBottom: 20,
                       flexDirection: 'row',
                       alignItems: 'center',
                     }}
@@ -149,11 +149,7 @@ export function RenderForm({
                 control={control}
                 name={fieldName}
                 render={({ field: formField }) => (
-                  <View
-                    style={{
-                      marginTop: 20,
-                    }}
-                  >
+                  <View style={{ marginBottom: 20 }}>
                     <Text style={{ marginBottom: 8 }}>{displayName}</Text>
                     <Select
                       onValueChange={(option) =>
@@ -192,7 +188,7 @@ export function RenderForm({
                 control={control}
                 name={fieldName}
                 render={({ field }) => (
-                  <View style={{ marginTop: 20 }}>
+                  <View style={{ marginBottom: 20 }}>
                     <Text style={{ marginBottom: 8 }}>{displayName}</Text>
                     <Input
                       inputMode="text"
@@ -224,7 +220,7 @@ export function RenderForm({
                 control={control}
                 name={fieldName}
                 render={({ field }) => (
-                  <View style={{ marginTop: 20 }}>
+                  <View style={{ marginBottom: 20 }}>
                     <Text style={{ marginBottom: 8 }}>{displayName}</Text>
                     <Input
                       inputMode="numeric"
@@ -249,11 +245,65 @@ export function RenderForm({
               />
             );
 
+          case 'matrix':
+            return (
+              <Card key={index} style={{ marginBottom: 20 }}>
+                <CardHeader>
+                  <CardTitle>{displayName}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {field.matrixRows?.map((row) => {
+                    const subFieldName = `${fieldName}_${row.id}`;
+                    return (
+                      <Controller
+                        key={subFieldName}
+                        control={control}
+                        name={subFieldName}
+                        defaultValue={row.value}
+                        render={({ field: formField }) => (
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              marginVertical: 5,
+                            }}
+                          >
+                            <Text style={{ width: 120 }}>{row.label}</Text>
+                            <Button
+                              onPress={() =>
+                                formField.onChange(
+                                  Math.max(Number(formField.value || 0) - 1, 0),
+                                )
+                              }
+                            >
+                              <Text>-</Text>
+                            </Button>
+                            <Text style={{ marginHorizontal: 10 }}>
+                              {formField.value}
+                            </Text>
+                            <Button
+                              onPress={() =>
+                                formField.onChange(
+                                  Number(formField.value || 0) + 1,
+                                )
+                              }
+                            >
+                              <Text>+</Text>
+                            </Button>
+                          </View>
+                        )}
+                      />
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            );
+
           default:
             return null;
         }
       })}
-      <Button onPress={handleSubmit(onSubmit)} className={'mt-4'}>
+      <Button onPress={() => onSubmit(form.getValues())} className="mt-4">
         <Text>Submit</Text>
       </Button>
     </View>

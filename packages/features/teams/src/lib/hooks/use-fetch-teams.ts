@@ -12,10 +12,9 @@ export function useFetchTeams(userId: string | null | undefined) {
     }
 
     const { data, error } = await supabase
-      .from('accounts')
+      .from('accounts_memberships')
       .select('*')
-      .eq('primary_owner_user_id', userId)
-      .eq('is_personal_account', false);
+      .eq('user_id', userId);
 
     if (error) {
       throw error;

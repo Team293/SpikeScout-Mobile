@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useForm } from 'react-hook-form';
 import { ScrollView, View } from 'react-native';
@@ -7,7 +9,15 @@ import { useFetchMatchFormSchema } from '@kit/scouting/src/lib/hooks/use-fetch-m
 import { useSubmitMatchForm } from '@kit/scouting/src/lib/hooks/use-submit-match-form';
 import { useFetchTeam } from '@kit/teams/src/lib/hooks/use-fetch-team';
 import { useCurrentTeamId } from '@kit/teams/src/lib/hooks/use-team-store';
-import { Card, CardContent, CardHeader, CardTitle } from '@kit/ui';
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Text,
+} from '@kit/ui';
 
 export default function FormPage() {
   const router = useRouter();
@@ -17,10 +27,19 @@ export default function FormPage() {
   const { data: team } = useFetchTeam(currentTeamId);
   const submitMatchForm = useSubmitMatchForm();
 
-  const teamNumber = id?.toString().split('-')[0];
+  const teamNumber: string | undefined = id?.toString().split('-')[0];
   const matchNumber = id?.toString().split('-')[1];
+  const teamPosition = id?.toString().split('-')[2];
 
   const form = useForm();
+
+  const getAllianceColor = (teamPosition: number) => {
+    if (teamPosition <= 3) {
+      return 'red';
+    } else {
+      return 'blue';
+    }
+  };
 
   if (isLoading) {
     return (
@@ -36,17 +55,36 @@ export default function FormPage() {
     <View>
       <Stack.Screen
         options={{
-          title: 'Match Form | ' + id,
+          title: `Scouting Match ${matchNumber}`,
         }}
       />
-      <Card className={'m-5'}>
-        <CardHeader>
-          <CardTitle>Match Form | {id}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ScrollView>
+      <ScrollView>
+        <Card className={'m-5'}>
+          <CardHeader>
+            <CardTitle>Match Scouting Form</CardTitle>
+            <CardDescription>
+              <Badge
+                className={'mr-2'}
+                style={{
+                  backgroundColor: getAllianceColor(teamPosition),
+                }}
+              >
+                <Text>
+                  {Number(teamNumber)
+                    ? `Team ${teamNumber}`
+                    : `${
+                        getAllianceColor(Number(teamPosition || 0))
+                          .charAt(0)
+                          .toUpperCase() +
+                        getAllianceColor(Number(teamPosition || 0)).slice(1)
+                      } ${teamPosition}`}
+                </Text>
+              </Badge>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
             <RenderForm
-              fields={fields}
+              fields={JSON.parse(fields).fields}
               form={form}
               handleCustomSubmit={(data: any) => {
                 submitMatchForm(
@@ -56,13 +94,14 @@ export default function FormPage() {
                   currentTeamId,
                   Number(matchNumber),
                   Number(teamNumber),
+                  Number(teamPosition),
                 );
                 router.push('/');
               }}
             />
-          </ScrollView>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </ScrollView>
     </View>
   );
 }

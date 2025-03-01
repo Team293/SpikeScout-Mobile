@@ -51,11 +51,11 @@ export function MatchScoutingAssignmentsList() {
       <CardContent>
         <FlatList
           data={matchAssignments}
-          ItemSeparatorComponent={() => (
-            <View className={'bg-border h-px w-full'} />
-          )}
+          ItemSeparatorComponent={() => <View className={'mb-3 h-px w-full'} />}
           renderItem={({ item }) => (
-            <Link href={`/form/${item.teamNumber}-${item.matchNumber}`}>
+            <Link
+              href={`/form/${item.teamNumber}-${item.matchNumber}-${item.teamPosition}`}
+            >
               <Card className={'w-full'}>
                 <CardHeader>
                   <CardTitle>Match {item.matchNumber}</CardTitle>
@@ -66,7 +66,11 @@ export function MatchScoutingAssignmentsList() {
                         backgroundColor: getAllianceColor(item.teamPosition),
                       }}
                     >
-                      <Text>{item.teamNumber}</Text>
+                      <Text>
+                        {item.teamNumber
+                          ? `Team ${item.teamNumber}`
+                          : `${getAllianceColor(item.teamPosition).charAt(0).toUpperCase() + getAllianceColor(item.teamPosition).slice(1)} ${item.teamPosition}`}
+                      </Text>
                     </Badge>
                   </CardDescription>
                 </CardHeader>
