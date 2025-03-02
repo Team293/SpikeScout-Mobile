@@ -49,6 +49,8 @@ export function useSubmitMatchForm() {
 
       const fusedData = fuseData(parsedSchema, data);
 
+      console.log(fusedData);
+
       const formSchema = {
         name: formName,
         schema: {
@@ -114,18 +116,38 @@ export function useSubmitMatchForm() {
 }
 
 function fuseData(
-  fields: { label: string }[],
-  submitted: { [key: string]: string } = {},
-): { [key: string]: string } {
-  const result: { [key: string]: string } = {};
+  fields: any[],
+  submitted: { [key: string]: any } = {},
+): { [key: string]: any } {
+  const result: { [key: string]: any } = {};
 
-  Object.keys(submitted).forEach((key) => {
-    const match = key.match(/field_(\d+)/);
-    if (match && match[1]) {
-      const index = parseInt(match[1], 10);
-      if (fields[index] && fields[index].label) {
-        result[fields[index].label] = submitted[key]!;
+  fields.forEach((field, index) => {
+    if (field.type === 'header') return;
+
+    if (field.type === 'matrix') {
+      result[field.label] = JSON.stringify(
+        field.matrixRows.map((row: any) => {
+          const key = `field_${index}_${row.id}`;
+          const value = key in submitted ? submitted[key] : row.value;
+          return {
+            id: row.id,
+            label: row.label,
+            value,
+          };
+        }),
+      );
+    } else if (field.type === 'boolean') {
+      const key = `field_${index}`;
+      if (!submitted[key] || submitted[key] === 'false') {
+        result[field.label] = false;
       }
+
+      if (submitted[key] === 'true' || submitted[key] === true) {
+        result[field.label] = true;
+      }
+    } else {
+      const key = `field_${index}`;
+      result[field.label] = key in submitted ? submitted[key] : null;
     }
   });
 
