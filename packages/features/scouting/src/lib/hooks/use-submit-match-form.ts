@@ -1,9 +1,10 @@
 import { useNetInfo } from '@react-native-community/netinfo';
-import { create } from 'zustand';
 
 import { useSupabase, useUser } from '@kit/supabase';
 
-export type MatchData = {
+import { addLocalMatchData } from '../../utils/local-match-storage';
+
+export interface MatchData {
   data: any;
   schema: any;
   formName: string;
@@ -12,105 +13,44 @@ export type MatchData = {
   matchNumber: number;
   teamNumber: number;
   teamLocation: number;
-};
-
-interface LocalMatchDataStore {
-  matchData: MatchData[] | null;
-  setMatchData: (data: MatchData) => void;
 }
-
-export const matchDataStore = create<LocalMatchDataStore>((set) => ({
-  matchData: null,
-  setMatchData: (data) =>
-    set((state) => ({
-      matchData: state.matchData ? [...state.matchData, data] : [data],
-    })),
-}));
 
 export function useSubmitMatchForm() {
   const netInfo = useNetInfo();
   const supabase = useSupabase();
-  const setMatchData = matchDataStore((state) => state.setMatchData);
   const { data: user } = useUser();
 
-  const uploadToCloud = async (
-    data: any,
-    schema: any,
-    formName: string,
-    eventCode: string,
-    teamId: string,
-    matchNumber: number,
-    teamNumber: number,
-    teamLocation: number,
-  ) => {
+  return async (matchData: MatchData) => {
+    if (!netInfo.isConnected) {
+      await addLocalMatchData(matchData);
+      return { success: true, isLocal: true };
+    }
+
     try {
-      const parsedSchema =
-        typeof schema === 'string' ? JSON.parse(schema) : schema;
+      const fusedData = fuseData(matchData.schema, matchData.data);
 
-      const fusedData = fuseData(parsedSchema, data);
-
-      console.log(fusedData);
-
-      const formSchema = {
-        name: formName,
+      const schema = {
+        name: matchData.formName,
         schema: {
-          fields: parsedSchema,
+          fields: matchData.schema,
         },
       };
 
       await supabase.from('scouting_responses').insert({
         type: 'match',
-        form_schema: formSchema,
+        form_schema: schema,
         scouting_json: fusedData,
-        event_code: eventCode,
-        team: teamId,
-        match_number: matchNumber,
-        team_number: teamNumber,
-        team_location: teamLocation,
-        scouter: user?.id,
+        event_code: matchData.eventCode || '',
+        team: matchData.teamId || '',
+        match_number: matchData.matchNumber,
+        team_number: matchData.teamNumber,
+        team_location: matchData.teamLocation,
+        scouter: user?.id || null,
       });
+      return { success: true, isLocal: false };
     } catch (error) {
-      console.error('Error uploading match data:', error);
-      throw error;
-    }
-  };
-
-  return async (
-    data: any,
-    schema: any,
-    formName: string,
-    eventCode: string | null | undefined,
-    teamId: string | null | undefined,
-    matchNumber: number,
-    teamNumber: number,
-    teamLocation: number,
-  ) => {
-    if (!eventCode || !teamId) {
-      throw new Error('Event code and team ID are required');
-    }
-
-    if (netInfo.isConnected) {
-      await uploadToCloud(
-        data,
-        schema,
-        formName,
-        eventCode,
-        teamId,
-        matchNumber,
-        teamNumber,
-        teamLocation,
-      );
-    } else {
-      setMatchData({
-        data,
-        schema,
-        formName,
-        eventCode,
-        teamId,
-        matchNumber,
-        teamNumber,
-        teamLocation,
-      });
+      await addLocalMatchData(matchData);
+      return { success: true, isLocal: true, error };
     }
   };
 }

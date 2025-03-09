@@ -103,17 +103,18 @@ export default function FormPage() {
             <RenderForm
               fields={formFields}
               form={form}
-              handleCustomSubmit={(data: any) => {
-                submitMatchForm(
-                  data,
-                  formFields,
-                  schema.name,
-                  team?.current_event,
-                  currentTeamId,
-                  Number(matchNumber),
-                  Number(teamNumber) || 0,
-                  Number(teamPosition || 0),
-                );
+              handleCustomSubmit={async (data: any) => {
+                await submitMatchForm({
+                  data: data,
+                  schema: formFields,
+                  formName: schema.name,
+                  eventCode: team?.current_event,
+                  teamId: team?.id,
+                  matchNumber: Number(matchNumber),
+                  teamNumber: Number(teamNumber) || 0,
+                  teamLocation: Number(teamPosition || 0),
+                });
+
                 router.push('/');
               }}
             />

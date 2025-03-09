@@ -1,5 +1,25 @@
-import { MatchData, matchDataStore } from './use-submit-match-form';
+import { useEffect, useState } from 'react';
 
-export function useLocalMatchData(): MatchData[] | null {
-  return matchDataStore.getState().matchData;
+import { getLocalMatchData } from '../../utils/local-match-storage';
+import { MatchData } from './use-submit-match-form';
+
+export function useLocalMatchData() {
+  const [localMatchData, setLocalMatchData] = useState<MatchData[]>([]);
+
+  useEffect(() => {
+    const fetchLocalData = async () => {
+      const data = await getLocalMatchData();
+      setLocalMatchData(data);
+    };
+
+    fetchLocalData().catch(console.error);
+
+    const intervalId = setInterval(() => {
+      void fetchLocalData();
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  return localMatchData;
 }

@@ -16,6 +16,7 @@ import {
   MatchData,
   useSubmitMatchForm,
 } from '../lib/hooks/use-submit-match-form';
+import { removeMatchesFromLocalStorage } from '../utils/local-match-storage';
 
 export function LocalMatchDataCard() {
   const localMatchData = useLocalMatchData();
@@ -67,19 +68,19 @@ function StoredMatches({ localMatches }: { localMatches: MatchData[] }) {
       <CardContent>
         <Button
           onPress={async () => {
-            await Promise.all(
-              localMatches.map((match) =>
-                uploadToCloud(
-                  match.data,
-                  match.schema,
-                  match.eventCode,
-                  match.teamId,
-                  match.matchNumber,
-                  match.teamNumber,
-                  match.teamLocation,
-                ),
-              ),
-            );
+            const uploadPromises = localMatches.map((match) => {
+              return uploadToCloud(match);
+            });
+
+            const results = await Promise.all(uploadPromises);
+
+            const successfulUploads = results
+              .filter((result) => result.success && !result.isLocal)
+              .map((_, index) => localMatches[index]);
+
+            if (successfulUploads.length > 0) {
+              await removeMatchesFromLocalStorage(successfulUploads);
+            }
           }}
         >
           <Text>Upload & Clear Matches</Text>

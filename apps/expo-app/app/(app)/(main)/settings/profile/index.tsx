@@ -1,9 +1,14 @@
+import { useNetInfo } from '@react-native-community/netinfo';
 import { Stack } from 'expo-router';
 import { View } from 'react-native';
 
 import { UpdateProfileContainer } from '@kit/account';
 
+import { OfflineNotSupported } from '../_components/offline-not-supported';
+
 export default function ProfileSettingsPage() {
+  const network = useNetInfo();
+
   return (
     <View className="flex-1 p-4">
       <Stack.Screen
@@ -15,7 +20,11 @@ export default function ProfileSettingsPage() {
         }}
       />
 
-      <UpdateProfileContainer />
+      {network.isConnected ? (
+        <UpdateProfileContainer />
+      ) : (
+        <OfflineNotSupported />
+      )}
     </View>
   );
 }

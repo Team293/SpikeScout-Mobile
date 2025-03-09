@@ -4,16 +4,31 @@ import { Redirect, Tabs } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { DatabaseIcon, HomeIcon, SettingsIcon } from 'lucide-react-native';
 
+import { useFetchAllMatchData } from '@kit/scouting/src/lib/hooks/use-fetch-all-match-data';
+import { useFetchMatchFormSchema } from '@kit/scouting/src/lib/hooks/use-fetch-match-form-schema';
+import { useFetchMatchScoutingAssignments } from '@kit/scouting/src/lib/hooks/use-fetch-match-scouting-assignments';
 import {
   AuthProvider,
   AuthProviderLoading,
   AuthProviderSignedIn,
   AuthProviderSignedOut,
+  useUser,
 } from '@kit/supabase';
+import { useFetchTeam } from '@kit/teams/src/lib/hooks/use-fetch-team';
+import { useCurrentTeamId } from '@kit/teams/src/lib/hooks/use-team-store';
 
 void SplashScreen.preventAutoHideAsync();
 
 export default function MainLayout() {
+  // populate local caches in preparation for offline mode
+  const currentTeam = useCurrentTeamId();
+  const { data: user } = useUser();
+
+  useFetchTeam(currentTeam);
+  useFetchMatchFormSchema();
+  useFetchMatchScoutingAssignments(user?.id, currentTeam);
+  useFetchAllMatchData(currentTeam);
+
   return (
     <AuthProvider>
       <AuthProviderLoading>

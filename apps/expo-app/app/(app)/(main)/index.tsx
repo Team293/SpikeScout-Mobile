@@ -12,7 +12,7 @@ export default function HomePage() {
   return <MatchScoutingAssignmentsList />;
 }
 
-function NoTeam() {
+export function NoTeam() {
   return (
     <Card className={'m-5'}>
       <CardHeader>

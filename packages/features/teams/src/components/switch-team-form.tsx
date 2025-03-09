@@ -19,6 +19,7 @@ import { useCurrentTeamId, useUpdateTeam } from '../lib/hooks/use-team-store';
 
 function TeamSelectItem({ team }: { team: { account_id: string } }) {
   const { data: teamData } = useFetchTeam(team.account_id);
+
   return (
     <SelectItem
       key={team.account_id}
