@@ -85,3 +85,7 @@ export function useFetchMatchFormSchema() {
     networkMode: network.isConnected ? 'online' : 'always',
   });
 }
+
+export async function refetchMatchFormSchema(queryClient: any) {
+  await queryClient.invalidateQueries(['form', 'schema', 'match']);
+}

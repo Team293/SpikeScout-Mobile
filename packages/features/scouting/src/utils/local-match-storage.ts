@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { MatchData } from '../lib/hooks/use-submit-match-form';
+import { MatchData } from '../lib/hooks/match/use-submit-match-form';
 
 const LOCAL_MATCH_DATA_KEY = '@local_match_data';
 

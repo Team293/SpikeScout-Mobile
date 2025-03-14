@@ -19,13 +19,13 @@ import {
   Text,
 } from '@kit/ui';
 
-import { refetchMatchFormSchema } from '../lib/hooks/match/use-fetch-match-form-schema';
+import { refetchPitFormSchema } from '../lib/hooks/pit/use-fetch-pit-form-schema';
 import {
-  refetchMatchScoutingAssignments,
-  useFetchMatchScoutingAssignments,
-} from '../lib/hooks/match/use-fetch-match-scouting-assignments';
+  refetchPitScoutingAssignments,
+  useFetchPitScoutingAssignments,
+} from '../lib/hooks/pit/use-fetch-pit-scouting-assignments';
 
-export function MatchScoutingAssignmentsList() {
+export function PitScoutingAssignmentsList() {
   const { data: user } = useUser();
   const currentTeamId = useCurrentTeamId();
   const queryClient = useQueryClient();
@@ -34,13 +34,13 @@ export function MatchScoutingAssignmentsList() {
     useCallback(() => {
       const refetch = async () => {
         if (user?.id && currentTeamId) {
-          await refetchMatchScoutingAssignments(
+          await refetchPitScoutingAssignments(
             queryClient,
             user.id,
             currentTeamId,
           );
 
-          await refetchMatchFormSchema(queryClient);
+          await refetchPitFormSchema(queryClient);
         }
       };
 
@@ -50,20 +50,12 @@ export function MatchScoutingAssignmentsList() {
     }, [currentTeamId, queryClient, user?.id]),
   );
 
-  const { data: matchAssignments } = useFetchMatchScoutingAssignments(
+  const { data: pitAssignments } = useFetchPitScoutingAssignments(
     user?.id,
     currentTeamId,
   );
 
-  const getAllianceColor = (teamPosition: number) => {
-    if (teamPosition <= 3) {
-      return 'red';
-    } else {
-      return 'blue';
-    }
-  };
-
-  if (!matchAssignments || matchAssignments.length === 0) {
+  if (!pitAssignments || pitAssignments.length === 0) {
     return <NoAssignments userId={user?.id} teamId={currentTeamId} />;
   }
 
@@ -71,38 +63,28 @@ export function MatchScoutingAssignmentsList() {
     <Card className={'my-3'}>
       <CardHeader>
         <CardTitle>
-          Match Assignments{' '}
+          Pit Assignments{' '}
           <ReloadButton userId={user?.id} teamId={currentTeamId} />
         </CardTitle>
         <CardDescription>
-          You have been assigned {matchAssignments.length}{' '}
-          {matchAssignments.length === 1 ? 'match' : 'matches'} to scout. Please
-          click on a match to start scouting.
+          You have been assigned {pitAssignments.length}{' '}
+          {pitAssignments.length === 1 ? 'team' : 'teams'} to scout. Please
+          click on a team to begin scouting.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <FlatList
-          data={matchAssignments}
+          data={pitAssignments}
+          contentContainerStyle={{ paddingBottom: 20 }}
           ItemSeparatorComponent={() => <View className={'mb-3 h-px w-full'} />}
           renderItem={({ item }) => (
-            <Link
-              href={`/form/match/${item.teamNumber}-${item.matchNumber}-${item.teamPosition}`}
-            >
+            <Link href={`/form/pit/${item.teamNumber}`}>
               <Card className={'w-full'}>
                 <CardHeader>
-                  <CardTitle>Match {item.matchNumber}</CardTitle>
+                  <CardTitle>Pit Scout</CardTitle>
                   <CardDescription>
-                    <Badge
-                      className={'mr-2'}
-                      style={{
-                        backgroundColor: getAllianceColor(item.teamPosition),
-                      }}
-                    >
-                      <Text>
-                        {item.teamNumber
-                          ? `Team ${item.teamNumber}`
-                          : `${getAllianceColor(item.teamPosition).charAt(0).toUpperCase() + getAllianceColor(item.teamPosition).slice(1)} ${item.teamPosition}`}
-                      </Text>
+                    <Badge className={'mr-2'}>
+                      <Text>{`Team ${item.teamNumber}`}</Text>
                     </Badge>
                   </CardDescription>
                 </CardHeader>
@@ -120,16 +102,16 @@ function NoAssignments({
   teamId,
 }: {
   userId?: string;
-  teamId?: string;
+  teamId?: string | null;
 }) {
   return (
     <Card className={'m-5'}>
       <CardHeader>
         <CardTitle>
-          No Matches Assigned <ReloadButton userId={userId} teamId={teamId} />
+          No Teams Assigned <ReloadButton userId={userId} teamId={teamId} />
         </CardTitle>
         <CardDescription>
-          You have not been assigned any matches to scout. Please check back
+          You have not been assigned any teams to scout. Please check back
           later.
         </CardDescription>
       </CardHeader>
@@ -145,7 +127,7 @@ function ReloadButton({ userId, teamId }: { userId: string; teamId: string }) {
       size={'icon'}
       variant={'ghost'}
       onPress={async () => {
-        await refetchMatchScoutingAssignments(queryClient, userId, teamId);
+        await refetchPitScoutingAssignments(queryClient, userId, teamId);
       }}
     >
       <RefreshCcw size={18} />

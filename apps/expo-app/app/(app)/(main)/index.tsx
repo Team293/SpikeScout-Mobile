@@ -1,4 +1,4 @@
-import { MatchScoutingAssignmentsList } from '@kit/scouting/src/components/match-scouting-assignments-list';
+import { ScoutingAssignmentsList } from '@kit/scouting/src/components/scouting-assignments-list';
 import { useCurrentTeamId } from '@kit/teams/src/lib/hooks/use-team-store';
 import { Card, CardContent, CardHeader, CardTitle, Text } from '@kit/ui';
 
@@ -9,7 +9,7 @@ export default function HomePage() {
     return <NoTeam />;
   }
 
-  return <MatchScoutingAssignmentsList />;
+  return <ScoutingAssignmentsList />;
 }
 
 export function NoTeam() {

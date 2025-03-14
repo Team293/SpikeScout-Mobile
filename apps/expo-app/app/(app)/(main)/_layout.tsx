@@ -4,9 +4,10 @@ import { Redirect, Tabs } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { DatabaseIcon, HomeIcon, SettingsIcon } from 'lucide-react-native';
 
-import { useFetchAllMatchData } from '@kit/scouting/src/lib/hooks/use-fetch-all-match-data';
-import { useFetchMatchFormSchema } from '@kit/scouting/src/lib/hooks/use-fetch-match-form-schema';
-import { useFetchMatchScoutingAssignments } from '@kit/scouting/src/lib/hooks/use-fetch-match-scouting-assignments';
+import { useFetchAllMatchData } from '@kit/scouting/src/lib/hooks/match/use-fetch-all-match-data';
+import { useFetchMatchFormSchema } from '@kit/scouting/src/lib/hooks/match/use-fetch-match-form-schema';
+import { useFetchMatchScoutingAssignments } from '@kit/scouting/src/lib/hooks/match/use-fetch-match-scouting-assignments';
+import { useFetchPitFormSchema } from '@kit/scouting/src/lib/hooks/pit/use-fetch-pit-form-schema';
 import {
   AuthProvider,
   AuthProviderLoading,
@@ -26,6 +27,10 @@ export default function MainLayout() {
 
   useFetchTeam(currentTeam);
   useFetchMatchFormSchema();
+  useFetchMatchScoutingAssignments(user?.id, currentTeam);
+  useFetchAllMatchData(currentTeam);
+
+  useFetchPitFormSchema();
   useFetchMatchScoutingAssignments(user?.id, currentTeam);
   useFetchAllMatchData(currentTeam);
 
@@ -79,7 +84,14 @@ function MainLayoutTabs() {
       />
 
       <Tabs.Screen
-        name="form/[id]/index"
+        name="form/match/[id]/index"
+        options={{
+          href: null,
+        }}
+      />
+
+      <Tabs.Screen
+        name="form/pit/[id]/index"
         options={{
           href: null,
         }}

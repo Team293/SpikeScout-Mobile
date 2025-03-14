@@ -111,7 +111,6 @@ export function useFetchMatchScoutingAssignments(
               assignment.teamPosition,
             ),
         );
-        console.log('filteredAssignments', filteredAssignments);
 
         await saveAssignmentsToStorage(userId, teamId, filteredAssignments);
 

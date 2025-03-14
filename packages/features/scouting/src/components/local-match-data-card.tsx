@@ -1,4 +1,3 @@
-import { Stack } from 'expo-router';
 import { View } from 'react-native';
 
 import {
@@ -11,11 +10,11 @@ import {
   Text,
 } from '@kit/ui';
 
-import { useLocalMatchData } from '../lib/hooks/use-local-match-data';
+import { useLocalMatchData } from '../lib/hooks/match/use-local-match-data';
 import {
   MatchData,
   useSubmitMatchForm,
-} from '../lib/hooks/use-submit-match-form';
+} from '../lib/hooks/match/use-submit-match-form';
 import { removeMatchesFromLocalStorage } from '../utils/local-match-storage';
 
 export function LocalMatchDataCard() {
@@ -23,11 +22,6 @@ export function LocalMatchDataCard() {
 
   return (
     <View>
-      <Stack.Screen
-        options={{
-          title: 'Local Match Data',
-        }}
-      />
       {!localMatchData || localMatchData.length === 0 ? (
         <NoMatches />
       ) : (
