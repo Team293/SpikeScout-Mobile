@@ -19,11 +19,11 @@ import {
   Text,
 } from '@kit/ui';
 
-import { refetchMatchFormSchema } from '../lib/hooks/match/use-fetch-match-form-schema';
 import {
+  refetchMatchFormSchema,
   refetchMatchScoutingAssignments,
   useFetchMatchScoutingAssignments,
-} from '../lib/hooks/match/use-fetch-match-scouting-assignments';
+} from '../lib/hooks/match';
 
 export function MatchScoutingAssignmentsList() {
   const { data: user } = useUser();
@@ -83,7 +83,10 @@ export function MatchScoutingAssignmentsList() {
       <CardContent>
         <FlatList
           data={matchAssignments}
+          contentContainerStyle={{ paddingBottom: 20 }}
           ItemSeparatorComponent={() => <View className={'mb-3 h-px w-full'} />}
+          scrollEnabled={true}
+          nestedScrollEnabled={true}
           renderItem={({ item }) => (
             <Link
               href={`/form/match/${item.teamNumber}-${item.matchNumber}-${item.teamPosition}`}

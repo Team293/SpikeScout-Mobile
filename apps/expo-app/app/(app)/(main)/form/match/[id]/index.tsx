@@ -1,12 +1,17 @@
 import React from 'react';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useForm } from 'react-hook-form';
 import { ScrollView, View } from 'react-native';
 
+import {
+  refetchMatchScoutingAssignments,
+  useFetchMatchFormSchema,
+  useSubmitMatchForm,
+} from '@kit/scouting';
 import { RenderForm } from '@kit/scouting/src/components/render-form';
-import { useFetchMatchFormSchema } from '@kit/scouting/src/lib/hooks/match/use-fetch-match-form-schema';
-import { useSubmitMatchForm } from '@kit/scouting/src/lib/hooks/match/use-submit-match-form';
+import { useUser } from '@kit/supabase';
 import { useFetchTeam } from '@kit/teams/src/lib/hooks/use-fetch-team';
 import { useCurrentTeamId } from '@kit/teams/src/lib/hooks/use-team-store';
 import {
@@ -26,6 +31,8 @@ export default function FormPage() {
   const currentTeamId = useCurrentTeamId();
   const { data: team } = useFetchTeam(currentTeamId);
   const submitMatchForm = useSubmitMatchForm();
+  const queryClient = useQueryClient();
+  const { data: user } = useUser();
 
   const teamNumber: string | undefined = id?.toString().split('-')[0];
   const matchNumber = id?.toString().split('-')[1];
@@ -114,6 +121,12 @@ export default function FormPage() {
                   teamNumber: Number(teamNumber) || 0,
                   teamLocation: Number(teamPosition || 0),
                 });
+
+                await refetchMatchScoutingAssignments(
+                  queryClient,
+                  user?.id,
+                  currentTeamId,
+                );
 
                 router.push('/');
               }}

@@ -4,10 +4,12 @@ import { Redirect, Tabs } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { DatabaseIcon, HomeIcon, SettingsIcon } from 'lucide-react-native';
 
-import { useFetchAllMatchData } from '@kit/scouting/src/lib/hooks/match/use-fetch-all-match-data';
-import { useFetchMatchFormSchema } from '@kit/scouting/src/lib/hooks/match/use-fetch-match-form-schema';
-import { useFetchMatchScoutingAssignments } from '@kit/scouting/src/lib/hooks/match/use-fetch-match-scouting-assignments';
-import { useFetchPitFormSchema } from '@kit/scouting/src/lib/hooks/pit/use-fetch-pit-form-schema';
+import {
+  useFetchAllMatchData,
+  useFetchMatchFormSchema,
+  useFetchMatchScoutingAssignments,
+  useFetchPitFormSchema,
+} from '@kit/scouting';
 import {
   AuthProvider,
   AuthProviderLoading,

@@ -19,11 +19,11 @@ import {
   Text,
 } from '@kit/ui';
 
-import { refetchPitFormSchema } from '../lib/hooks/pit/use-fetch-pit-form-schema';
 import {
+  refetchPitFormSchema,
   refetchPitScoutingAssignments,
   useFetchPitScoutingAssignments,
-} from '../lib/hooks/pit/use-fetch-pit-scouting-assignments';
+} from '../lib/hooks/pit';
 
 export function PitScoutingAssignmentsList() {
   const { data: user } = useUser();
@@ -77,6 +77,8 @@ export function PitScoutingAssignmentsList() {
           data={pitAssignments}
           contentContainerStyle={{ paddingBottom: 20 }}
           ItemSeparatorComponent={() => <View className={'mb-3 h-px w-full'} />}
+          scrollEnabled={true}
+          nestedScrollEnabled={true}
           renderItem={({ item }) => (
             <Link href={`/form/pit/${item.teamNumber}`}>
               <Card className={'w-full'}>
