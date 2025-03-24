@@ -30,7 +30,8 @@ export interface FieldDefinition {
     | 'boolean'
     | 'matrix'
     | 'photo'
-    | 'header';
+    | 'header'
+    | 'image';
   label: string;
   required?: boolean;
   placeholder?: string;
@@ -39,6 +40,7 @@ export interface FieldDefinition {
   max?: number;
   matrixRows?: MatrixRow[];
   maxRating?: number;
+  maxImages?: number; // Maximum number of images allowed, undefined means infinite
 }
 
 export interface MatrixRow {

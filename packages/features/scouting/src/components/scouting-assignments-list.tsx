@@ -24,7 +24,7 @@ export function ScoutingAssignmentsList() {
         <Tabs
           value={tab}
           onValueChange={(value: string) => setTab(value as 'match' | 'pit')}
-          className={'mx-auto w-full max-w-[400px] flex-col gap-1.5'}
+          className={'mx-auto w-full flex-col gap-1.5'}
         >
           <TabsList className="w-full flex-row">
             <TabsTrigger value={'match'} className="flex-1 rounded-lg">

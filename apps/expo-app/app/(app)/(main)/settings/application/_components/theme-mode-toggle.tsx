@@ -5,7 +5,7 @@ import { View } from 'react-native';
 
 import { ToggleGroup, ToggleGroupItem } from '@kit/ui';
 
-type Theme = 'light' | 'dark' | 'system';
+type Theme = 'light';
 
 export function ThemeModeToggle() {
   const { colorScheme, setColorScheme } = useColorScheme();

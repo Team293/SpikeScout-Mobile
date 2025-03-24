@@ -60,7 +60,7 @@ export function PitScoutingAssignmentsList() {
   }
 
   return (
-    <Card className={'my-3'}>
+    <Card className={'my-3 h-[89%]'}>
       <CardHeader>
         <CardTitle>
           Pit Assignments{' '}
@@ -74,6 +74,7 @@ export function PitScoutingAssignmentsList() {
       </CardHeader>
       <CardContent>
         <FlatList
+          className={'max-h-[90%]'}
           data={pitAssignments}
           contentContainerStyle={{ paddingBottom: 20 }}
           ItemSeparatorComponent={() => <View className={'mb-3 h-px w-full'} />}

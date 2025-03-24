@@ -27,6 +27,7 @@
     "@manypkg/cli": "catalog:",
     "@turbo/gen": "catalog:",
     "@types/node": "catalog:",
+    "@types/uuid": "^10.0.0",
     "cross-env": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
@@ -35,5 +36,8 @@
     "react-is": "catalog:",
     "turbo": "catalog:",
     "typescript": "catalog:"
+  },
+  "dependencies": {
+    "expo-image-picker": "^16.0.6"
   }
 }

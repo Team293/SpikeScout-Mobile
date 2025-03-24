@@ -244,12 +244,12 @@ export function mapField<T = any>(field: FieldDefinition, value: any): T {
   }
 
   try {
-    const result = mapper(field, value) as T;
-    return result;
+    return mapper(field, value) as T;
   } catch (err) {
-    console.error(`Error mapping field ${field.label} of type ${field.type}:`, err);
-    console.log('Field:', JSON.stringify(field));
-    console.log('Value:', JSON.stringify(value));
+    console.error(
+      `Error mapping field ${field.label} of type ${field.type}:`,
+      err,
+    );
     return value as T;
   }
 }
@@ -267,7 +267,6 @@ export function validateField(
   const validator = fieldValidators[field.type];
 
   if (!validator) {
-    // If no validator is registered, consider it valid
     return null;
   }
 

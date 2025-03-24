@@ -4,6 +4,7 @@ import { Link } from 'expo-router';
 import { ChevronRight } from 'lucide-react-native';
 import { FlatList, View } from 'react-native';
 
+import { DeleteAccountModel } from '@kit/account/src/components/delete-account-model';
 import { Text } from '@kit/ui';
 
 import { SignOutButton } from './sign-out-button';
@@ -15,11 +16,11 @@ type Page = {
 };
 
 const pages: Page[] = [
-  {
-    name: 'application',
-    title: 'Application',
-    href: '/settings/application' as const,
-  },
+  // {
+  //   name: 'application',
+  //   title: 'Application',
+  //   href: '/settings/application' as const,
+  // },
   {
     name: 'profile',
     title: 'Profile',
@@ -58,6 +59,8 @@ export function SettingsPagesList() {
       />
 
       <SignOutButton />
+      <View className={'my-2'} />
+      <DeleteAccountModel />
     </View>
   );
 }

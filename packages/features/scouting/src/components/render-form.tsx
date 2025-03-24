@@ -45,8 +45,6 @@ export function RenderForm({
   }, []);
 
   const onSubmit = (data: any) => {
-    console.log('submitting');
-
     clearErrors();
 
     const validationErrors = validateFormData(fields, data);

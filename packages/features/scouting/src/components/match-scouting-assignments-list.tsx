@@ -57,9 +57,9 @@ export function MatchScoutingAssignmentsList() {
 
   const getAllianceColor = (teamPosition: number) => {
     if (teamPosition <= 3) {
-      return 'red';
+      return '#f54542';
     } else {
-      return 'blue';
+      return '#4272f5';
     }
   };
 
@@ -68,7 +68,7 @@ export function MatchScoutingAssignmentsList() {
   }
 
   return (
-    <Card className={'my-3'}>
+    <Card className={'my-3 h-[89%]'}>
       <CardHeader>
         <CardTitle>
           Match Assignments{' '}
@@ -82,6 +82,7 @@ export function MatchScoutingAssignmentsList() {
       </CardHeader>
       <CardContent>
         <FlatList
+          className={'max-h-[90%]'}
           data={matchAssignments}
           contentContainerStyle={{ paddingBottom: 20 }}
           ItemSeparatorComponent={() => <View className={'mb-3 h-px w-full'} />}

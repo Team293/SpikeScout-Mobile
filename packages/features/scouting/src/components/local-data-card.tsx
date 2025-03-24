@@ -73,7 +73,7 @@ export function LocalDataCard() {
   return (
     <Card className={'m-5'}>
       <CardHeader className="flex-row items-center">
-        <View className="flex-1 mr-2">
+        <View className="mr-2 flex-1">
           <CardTitle>Local Data | {totalLocalData}</CardTitle>
           <CardDescription>
             Data stored locally when offline will appear here
@@ -88,7 +88,7 @@ export function LocalDataCard() {
         <Tabs
           value={activeTab}
           onValueChange={(value) => setActiveTab(value as 'match' | 'pit')}
-          className={'mx-auto w-full max-w-[400px] flex-col gap-1.5'}
+          className={'mx-auto w-full flex-col gap-1.5'}
         >
           <TabsList className="w-full flex-row">
             <TabsTrigger value="match" className="flex-1 rounded-lg">
