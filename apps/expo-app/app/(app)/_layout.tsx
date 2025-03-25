@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+import { Appearance } from 'react-native';
 
 export default function AppLayout() {
   return (

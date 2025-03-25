@@ -18,14 +18,23 @@ import {
   useUser,
 } from '@kit/supabase';
 import { useFetchTeam } from '@kit/teams/src/lib/hooks/use-fetch-team';
-import { useCurrentTeamId } from '@kit/teams/src/lib/hooks/use-team-store';
+import { useFetchTeams } from '@kit/teams/src/lib/hooks/use-fetch-teams';
+import {
+  useCurrentTeamId,
+  useUpdateTeam,
+} from '@kit/teams/src/lib/hooks/use-team-store';
 
 void SplashScreen.preventAutoHideAsync();
 
 export default function MainLayout() {
-  // populate local caches in preparation for offline mode
   const currentTeam = useCurrentTeamId();
+  const updateTeam = useUpdateTeam();
   const { data: user } = useUser();
+  const { data: teams } = useFetchTeams(user?.id);
+
+  if (currentTeam == null && teams && teams[0]) {
+    updateTeam(teams[0].account_id);
+  }
 
   useFetchTeam(currentTeam);
   useFetchMatchFormSchema();

@@ -40,6 +40,14 @@ export default function FormPage() {
 
   const form = useForm();
 
+  const getAllianceHexColor = (teamPosition: number) => {
+    if (teamPosition <= 3) {
+      return '#f54542';
+    } else {
+      return '#4272f5';
+    }
+  };
+
   const getAllianceColor = (teamPosition: number) => {
     if (teamPosition <= 3) {
       return 'red';
@@ -90,7 +98,9 @@ export default function FormPage() {
               <Badge
                 className={'mr-2'}
                 style={{
-                  backgroundColor: getAllianceColor(Number(teamPosition || 0)),
+                  backgroundColor: getAllianceHexColor(
+                    Number(teamPosition || 0),
+                  ),
                 }}
               >
                 <Text>

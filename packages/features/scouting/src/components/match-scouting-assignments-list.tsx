@@ -55,11 +55,19 @@ export function MatchScoutingAssignmentsList() {
     currentTeamId,
   );
 
-  const getAllianceColor = (teamPosition: number) => {
+  const getAllianceHexColor = (teamPosition: number) => {
     if (teamPosition <= 3) {
       return '#f54542';
     } else {
       return '#4272f5';
+    }
+  };
+
+  const getAllianceColor = (teamPosition: number) => {
+    if (teamPosition <= 3) {
+      return 'red';
+    } else {
+      return 'blue';
     }
   };
 
@@ -99,7 +107,7 @@ export function MatchScoutingAssignmentsList() {
                     <Badge
                       className={'mr-2'}
                       style={{
-                        backgroundColor: getAllianceColor(item.teamPosition),
+                        backgroundColor: getAllianceHexColor(item.teamPosition),
                       }}
                     >
                       <Text>
